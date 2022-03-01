@@ -8,14 +8,16 @@ const mongoose = require("mongoose");
 const MONGODB_URI = `${process.env.MONGODB_URL}/${process.env.DB_NAME}`;
 
 mongoose
-  .connect(MONGODB_URI, {
+  .connect(process.env.MONGODB_CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: true,
     // useCreateIndex: true
   })
   .then((x) => {
-    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`);
+    console.log(
+      `Connected to Mongo! Database name: "${x.connections[0].name}"`
+    );
   })
   .catch((err) => {
     console.error("Error connecting to mongo: ", err);

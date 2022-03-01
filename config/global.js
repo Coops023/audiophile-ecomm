@@ -1,6 +1,6 @@
-var express = require('express');
+var express = require("express");
 
-var logger = require('morgan');
+var logger = require("morgan");
 
 const cookieParser = require("cookie-parser");
 
@@ -8,15 +8,24 @@ const favicon = require("serve-favicon");
 
 const path = require("path");
 
-const session = require('express-session');
+const session = require("express-session");
 
-const cors = require("cors")
+const cors = require("cors");
 
-const MongoStore = require('connect-mongo');
+const MongoStore = require("connect-mongo");
+
+// Accessing the path module
+const path = require("path");
+
+// Step 1:
+server.use(express.static(path.resolve(__dirname, "./client/build")));
+// Step 2:
+server.get("*", function (request, response) {
+  response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
 
 // Middleware configuration
 module.exports = (server) => {
-	
   // Because this is a server that will accept requests from outside and it will be hosted ona server with a `proxy`, express needs to know that it should trust that setting.
   // Services like heroku use something called a proxy and you need to add this to your server
   server.set("trust proxy", 1);
@@ -44,17 +53,16 @@ module.exports = (server) => {
   // app.use(favicon(path.join(__dirname, "..", "public", "images", "favicon.ico")));
 
   server.use(
-		session({
-			secret: 'Globtrotters-secret',
-			resave: false,
-			saveUninitialized: true,
-			cookie: {
-				maxAge: 24 * 60 * 60 * 1000
-			},
-			store: MongoStore.create({
-				mongoUrl: `${process.env.MONGODB_URL}/${process.env.DB_NAME}`
-			})
-		})
-	);
-
+    session({
+      secret: "Globtrotters-secret",
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 24 * 60 * 60 * 1000,
+      },
+      store: MongoStore.create({
+        mongoUrl: `${process.env.MONGODB_URL}/${process.env.DB_NAME}`,
+      }),
+    })
+  );
 };
